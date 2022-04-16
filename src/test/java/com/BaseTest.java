@@ -1,11 +1,11 @@
 package com;
 
 import com.page.GooglePage;
-import org.openqa.selenium.MutableCapabilities;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.slf4j.LoggerFactory;
 import org.testng.ITestContext;
 import org.testng.annotations.AfterSuite;
@@ -13,8 +13,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeTest;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,8 +41,8 @@ public class BaseTest {
 
 
     @BeforeTest
-    public void beforeClassTestSetup(ITestContext context) throws MalformedURLException {
-        getRemoteDriver(context);
+    public void beforeClassTestSetup() {
+        getRemoteDriver();
     }
 
     @BeforeClass
@@ -61,24 +59,16 @@ public class BaseTest {
         }
     }
 
-    private void getRemoteDriver(ITestContext context) throws MalformedURLException {
-        MutableCapabilities dc = new ChromeOptions();
+    private void getRemoteDriver() {
 
-        dc.merge(configureChromeOptions());
-        dc.setCapability("name", context.getCurrentXmlTest().getName());
+        WebDriverManager.chromedriver().setup();
 
-        host = System.getenv("HUB_HOST") != null ? System.getenv("HUB_HOST") : "chrome";
-
-        driver.set(new RemoteWebDriver(new URL("http://" + host + ":4444/wd/hub"), dc));
+        driver.set(new ChromeDriver(configureChromeOptions()));
 
         logger.info("Remote Chrome Driver Started...");
 
         driver.get().manage().deleteAllCookies();
         driver.get().manage().window().maximize();
-
-        context.setAttribute("WebDriver", driver.get());
-
-        logger.info("Window Size: " + driver.get().manage().window().getSize().getHeight() + "x" + driver.get().manage().window().getSize().getWidth());
     }
 
     private ChromeOptions configureChromeOptions() {
@@ -104,6 +94,7 @@ public class BaseTest {
         chromeOptions.addArguments("--no-default-browser-check");
         chromeOptions.addArguments("--disable-dev-shm-usage");
         chromeOptions.addArguments("--disable-gpu");
+        chromeOptions.addArguments("--headless");
 
         Map<String, Object> prefs = new HashMap<>();
         prefs.put("credentials_enable_service", false);

@@ -51,7 +51,9 @@ public class AssertWebElement extends AbstractAssert<AssertWebElement, WebElemen
 
     public AssertWebElement isButton() {
         isNotNull();
-        boolean isButton = actual.getTagName().equalsIgnoreCase("button") || actual.getAttribute("type").equalsIgnoreCase("button");
+        boolean isButton = actual.getTagName().equalsIgnoreCase("button") ||
+                actual.getAttribute("type").equalsIgnoreCase("button") ||
+                actual.getAttribute("role").equalsIgnoreCase("button");
 
         if (isButton) {
             log.info("Expected element is button.");

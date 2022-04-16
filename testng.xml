@@ -4,7 +4,7 @@
     <test verbose="2" preserve-order="true" name="Regression Suite" >
         <classes>
             <class name="com.core.AssertFieldTest"/>
-            <class name="com.core.AssertFieldTest"/>
+            <class name="com.core.AssertWebElement"/>
             <class name="com.core.AssertFieldTest"/>
             <class name="com.core.AssertFieldTest"/>
         </classes>
